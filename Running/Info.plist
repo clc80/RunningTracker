@@ -64,5 +64,7 @@
 	</array>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>We need your location to save where you started running and where you go. </string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to know how far you ran.</string>
 </dict>
 </plist>

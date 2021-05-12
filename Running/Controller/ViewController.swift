@@ -12,7 +12,7 @@ import MapKit
 class ViewController: UIViewController {
     
     //MARK: -  IBOutlets
-    @IBOutlet var mapView: MKMapView!
+    @IBOutlet weak var mapView: MKMapView!
     @IBOutlet var distanceLabel: UILabel!
     @IBOutlet var distanceSegmentedControl: UISegmentedControl!
     
@@ -21,6 +21,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         checkLocationAuthStatus()
+        mapView.delegate = self
     }
 
     //MARK: - IBActions
@@ -36,13 +37,27 @@ class ViewController: UIViewController {
 
 // MARK: - Extensions
 
-extension ViewController {
+extension ViewController:  MKMapViewDelegate {
     func checkLocationAuthStatus() {
         if LocationService.instance.locationManager.authorizationStatus == .authorizedWhenInUse{
-            print("Yay we can see where you are when you have the app running")
+            self.mapView.showsUserLocation = true
+            LocationService.instance.customUserLocDelgate = self
         } else {
             LocationService.instance.locationManager.requestWhenInUseAuthorization()
         }
     }
+    
+    func centerMapOnUserLocation(coordinates: CLLocationCoordinate2D) {
+        let region = MKCoordinateRegion(center: coordinates, latitudinalMeters: 1000, longitudinalMeters: 1000)
+        self.mapView.setRegion(region, animated: true)
+    }
+}
+
+extension ViewController: CustomUserLocDelegate {
+    func userLocationUpdated(location: CLLocation) {
+        centerMapOnUserLocation(coordinates: location.coordinate)
+    }
+    
+    
 }
 
