@@ -62,13 +62,12 @@
 		3A78824C2630AC7D00B6E190 /* Running */ = {
 			isa = PBXGroup;
 			children = (
-				3AA6E9C926324F7D00C66962 /* Model */,
-				3AA6E9C526324EFF00C66962 /* Services */,
-				3A78826226311AF800B6E190 /* View */,
-				3A78826726311D0200B6E190 /* Controller */,
 				3A78824D2630AC7D00B6E190 /* AppDelegate.swift */,
 				3A78824F2630AC7D00B6E190 /* SceneDelegate.swift */,
-				3A7882512630AC7D00B6E190 /* ViewController.swift */,
+				3AA6E9C526324EFF00C66962 /* Services */,
+				3AA6E9C926324F7D00C66962 /* Model */,
+				3A78826226311AF800B6E190 /* View */,
+				3A78826726311D0200B6E190 /* Controller */,
 				3A7882532630AC7D00B6E190 /* Main.storyboard */,
 				3A7882562630AC7E00B6E190 /* Assets.xcassets */,
 				3A7882582630AC7E00B6E190 /* LaunchScreen.storyboard */,
@@ -88,6 +87,7 @@
 		3A78826726311D0200B6E190 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				3A7882512630AC7D00B6E190 /* ViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";

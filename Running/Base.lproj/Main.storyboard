@@ -50,6 +50,9 @@
                                             <imageReference key="image" image="play.fill" catalog="system" symbolScale="large"/>
                                             <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default" weight="black"/>
                                         </state>
+                                        <connections>
+                                            <action selector="PlayPauseButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="5xn-hJ-8Nt"/>
+                                        </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Distance" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m7X-4M-C0w">
                                         <rect key="frame" x="16" y="20" width="161" height="53"/>
@@ -86,8 +89,16 @@
                     <navigationItem key="navigationItem" largeTitleDisplayMode="always" id="kn9-WK-F7D">
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="action" id="1VI-yZ-qRg">
                             <color key="tintColor" red="0.74117647060000003" green="0.45098039220000002" blue="0.28235294119999998" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="shareButtonPressed:" destination="BYZ-38-t0r" id="9nb-OU-jgQ"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="distanceLabel" destination="m7X-4M-C0w" id="6Om-sU-ZqC"/>
+                        <outlet property="distanceSegmentedControl" destination="HIu-Et-QgI" id="BiJ-4v-Oqn"/>
+                        <outlet property="mapView" destination="4ex-Ry-mEK" id="E2D-Ly-ruq"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
