@@ -98,6 +98,7 @@
                         <outlet property="distanceLabel" destination="m7X-4M-C0w" id="6Om-sU-ZqC"/>
                         <outlet property="distanceSegmentedControl" destination="HIu-Et-QgI" id="BiJ-4v-Oqn"/>
                         <outlet property="mapView" destination="4ex-Ry-mEK" id="E2D-Ly-ruq"/>
+                        <outlet property="startPauseButton" destination="CnW-jl-2Y9" id="lkZ-FD-oKb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

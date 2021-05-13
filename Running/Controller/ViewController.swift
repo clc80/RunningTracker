@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet var distanceLabel: UILabel!
     @IBOutlet var distanceSegmentedControl: UISegmentedControl!
+    @IBOutlet weak var startPauseButton: RoundButton!
     
     // MARK: - Properties
     var runningRouteAnnotation: RunningRoute?
@@ -28,11 +29,15 @@ class ViewController: UIViewController {
 
     //MARK: - IBActions
     @IBAction func PlayPauseButtonPressed(_ sender: Any) {
-        if mapView.annotations.count == 1 {
+        mapView.removeAnnotations(mapView.annotations)
+        
+        if runningRouteAnnotation == nil  {
             guard let coordinates = LocationService.instance.currentLocation else { return }
             setupAnnotation(coordinate: coordinates)
+            startPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
         } else {
-            //TODO handle moving annotation
+            startPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+            runningRouteAnnotation = nil
         }
     }
     
