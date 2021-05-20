@@ -19,6 +19,7 @@ class ViewController: UIViewController {
     
     // MARK: - Properties
     var runningRouteAnnotation: RunningRoute?
+    var metersRan: Double = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,20 +32,30 @@ class ViewController: UIViewController {
 
     //MARK: - IBActions
     @IBAction func PlayPauseButtonPressed(_ sender: Any) {
-        mapView.removeAnnotations(mapView.annotations)
+        removeOverlays()
+        guard let coordinates = LocationService.instance.currentLocation else { return }
         
         if runningRouteAnnotation == nil  {
-            guard let coordinates = LocationService.instance.currentLocation else { return }
             setupAnnotation(coordinate: coordinates)
-            startPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
+            startPauseButton.setImage(UIImage(systemName: "stop.fill"), for: .normal)
         } else {
             startPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+            
+            
+            guard let endCoordinate = LocationService.instance.currentLocation,
+                  let startCoordinate = runningRouteAnnotation else { return }
+            getDistanceOfRun(startCoordinate: startCoordinate.coordinate, endCoordinate: endCoordinate)
+            
             runningRouteAnnotation = nil
         }
     }
     
     @IBAction func shareButtonPressed(_ sender: Any) {
     
+    }
+    
+    @IBAction func distanceUnitChanged(_ sender: Any) {
+        calculateDistanceToShow()
     }
     
 }
@@ -74,7 +85,7 @@ extension ViewController:  MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if let annotation = annotation as? RunningRoute {
             let id = "pin"
-            var view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: id)
+            let view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: id)
             view.canShowCallout = true
             view.animatesDrop = true
             view.pinTintColor = .green
@@ -83,6 +94,12 @@ extension ViewController:  MKMapViewDelegate {
             return view
         }
         return nil
+    }
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        guard let coordinates = LocationService.instance.currentLocation,
+              let runningStartLocation = runningRouteAnnotation else { return }
+        getDistanceOfRun(startCoordinate: runningStartLocation.coordinate, endCoordinate: coordinates)
+        view.setSelected(false, animated: true)
     }
 }
 
@@ -107,7 +124,57 @@ extension ViewController {
             let coordinate = self.mapView.convert(point, toCoordinateFrom: self.mapView)
             setupAnnotation(coordinate: coordinate)
             
-            startPauseButton.setImage(UIImage(systemName: "pause"), for: .normal)
+            startPauseButton.setImage(UIImage(systemName: "stop.fill"), for: .normal)
         }
+    }
+}
+
+extension ViewController {
+    func getDistanceOfRun(startCoordinate: CLLocationCoordinate2D, endCoordinate: CLLocationCoordinate2D) {
+        let request = MKDirections.Request()
+        request.source = MKMapItem(placemark: MKPlacemark(coordinate: endCoordinate))
+        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: startCoordinate))
+        request.transportType = .walking
+        
+        let directions = MKDirections(request: request)
+        
+        directions.calculate { (response, error) in
+            guard let route = response?.routes.first else { return }
+            self.mapView.addOverlay(route.polyline)
+            
+            self.mapView.setVisibleMapRect(route.polyline.boundingMapRect, edgePadding: UIEdgeInsets(top: 200, left: 50, bottom: 50, right: 50), animated: true )
+            
+            for step in route.steps {
+                self.metersRan = step.distance
+                self.calculateDistanceToShow()
+            }
+        }
+    }
+    
+    func calculateDistanceToShow() {
+        var distanceRan = 0.0
+        if distanceSegmentedControl.selectedSegmentIndex == 0 {
+            // Miles
+            distanceRan = metersRan * 0.00062137119224
+        } else {
+            // Kilometers
+            distanceRan = metersRan / 1000
+        }
+        self.distanceLabel.text = String(format: "%.2f", distanceRan)
+    }
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        let directionsRenderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
+        
+        directionsRenderer.strokeColor = .systemGreen
+        directionsRenderer.lineWidth = 5
+        directionsRenderer.alpha = 0.85
+        
+        return directionsRenderer
+    }
+    
+    func removeOverlays() {
+        self.mapView.overlays.forEach({ self.mapView.removeOverlay($0) })
+        self.mapView.removeAnnotations(mapView.annotations)
     }
 }
