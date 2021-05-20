@@ -51,7 +51,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func shareButtonPressed(_ sender: Any) {
-    
+        takeAndShareScreenShot()
     }
     
     @IBAction func distanceUnitChanged(_ sender: Any) {
@@ -176,5 +176,17 @@ extension ViewController {
     func removeOverlays() {
         self.mapView.overlays.forEach({ self.mapView.removeOverlay($0) })
         self.mapView.removeAnnotations(mapView.annotations)
+    }
+    
+    func takeAndShareScreenShot() {
+        let bounds = UIScreen.main.bounds
+           UIGraphicsBeginImageContextWithOptions(bounds.size, true, 0.0)
+        self.view.drawHierarchy(in: bounds, afterScreenUpdates: false)
+           let img = UIGraphicsGetImageFromCurrentImageContext()
+           UIGraphicsEndImageContext()
+        
+        let vc = UIActivityViewController(activityItems: [img], applicationActivities: [])
+        present(vc, animated: true)
+           
     }
 }
